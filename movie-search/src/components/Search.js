@@ -2,7 +2,8 @@ import Filters from "./Filters";
 
 export default function Search({
                                    searchTerm,
-                                   handleSearchInput,
+                                   handleSearchTermChange,
+                                   searchKeyPress,
                                    MOVIE_TYPE_TO_FILTER_VALUE,
                                    movieTypeIndex,
                                    handleMovieTypeChange,
@@ -15,7 +16,8 @@ export default function Search({
         <div id="search">
             <div className='input-box'>
                 <input
-                    onChange={e => handleSearchInput(e)}
+                    onChange={e => handleSearchTermChange(e)}
+                    onKeyDown={e => searchKeyPress(e)}
                     value = {searchTerm}
                     type="text"/>
             </div>

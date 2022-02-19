@@ -1,7 +1,9 @@
+import MoviesList from "./MoviesList";
 
 const Showcase = () => {
   return (
     <div id='showcase'>
+      <MoviesList />
     </div>
   );
 };

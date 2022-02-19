@@ -13,7 +13,7 @@ export default function Filters({
                                     MIN_YEAR,
                                     MAX_YEAR
 }){
-    console.log("MOVIE_TYPE_TO_FILTER_VALUE", MOVIE_TYPE_TO_FILTER_VALUE)
+
  return <div id="filters">
              <div id="years-filter">
                  <Box sx={{textTransform: 'uppercase'}} id="">Year</Box>

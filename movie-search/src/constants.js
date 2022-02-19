@@ -6,3 +6,7 @@ export const MOVIE_TYPE_TO_FILTER_VALUE = [
 ]
 export const MIN_YEAR_VALUE = 1892;
 export const MAX_YEAR_VALUE = new Date().getFullYear();
+export const MESSAGES = {
+    initial: 'Please, make a search',
+    select: 'Please, select the movie to see the details'
+}
