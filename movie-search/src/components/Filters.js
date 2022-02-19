@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import Radio from '@mui/material/Radio';
 import Slider from '@mui/material/Slider';
+import {FormControlLabel, RadioGroup} from "@mui/material";
 
 
 export default function Filters({
@@ -36,20 +37,24 @@ export default function Filters({
                  </div>
              </div>
 
-     <Box className="types-filter">
+     <div className="types-filter">
+         <Box sx={{textTransform: 'uppercase'}}>Type</Box>
+         <RadioGroup row>
          {MOVIE_TYPE_TO_FILTER_VALUE.map(({title, filter}, index) => {
              return (<>
-                <input
-                    type='radio'
-                    value={filter}
-                    onChange={handleMovieTypeChange.bind(null,index)}
+                <FormControlLabel
                     key={filter}
+                    value={filter}
                     checked={movieTypeIndex === index}
+                    control={<Radio size='medium' /> }
+                    onChange={handleMovieTypeChange.bind(null,index)}
+                    label={title}
                 />
-             <label htmlFor="title">{title}</label>
+
     </>
          )
          })}
-     </Box>
+         </RadioGroup>
+     </div>
  </div>
 }
