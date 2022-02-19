@@ -45,38 +45,41 @@ export default function Home(){
         }
     //    true? assign values from years filter state to the variables
     //    assign moviesType to a variable
-        let fromYear, toYear;
-        if(yearsSliderValue[0]< yearsSliderValue[1]){
-            fromYear = yearsSliderValue[0]
-            toYear = yearsSliderValue[1]
+        let fromYear,toYear;
+        if (yearsSliderValue[0]<yearsSliderValue[1]){
+            fromYear = yearsSliderValue[0];
+            toYear = yearsSliderValue[1];
         }else{
-            fromYear = yearsSliderValue[1]
+            fromYear = yearsSliderValue[1];
             toYear = yearsSliderValue[0]
         }
         let movieType = MOVIE_TYPE_TO_FILTER_VALUE[movieTypeIndex]
-    // assign the results [promise] of the function call to a variable
-       const newQueryMeta = queryMovies(usableSearchTerm, fromYear, toYear, movieType);
 
-        newQueryMeta.promise
-           .then(data=>{
-               if(data[0].Error){
-                   setMessage(data[0].Error)
-               }else{
-                   setMessage(MESSAGES.select)
-               }
-               setMovieQueryResult(data)
-               console.log('results: ',movieQueryResult)
-           }).catch(errorMessage =>{
-               setMessage(errorMessage)
+        const newQueryMeta = queryMovies(
+            usableSearchTerm,
+            fromYear,
+            toYear,
+            movieType
+        );
+
+        newQueryMeta.promise.then(data=>{
+            if(data[0].Response === 'False'){
+                setMessage(data[0].Error)
+            }else{
+                setMessage(MESSAGES.select)
+                setMovieQueryResult(data);
+
+            }
+
+        }).catch(errorMessage=>{
+            setMessage(errorMessage);
         })
-        setMovieQueryMeta(oldQueryMeta => {
+        setMovieQueryMeta(oldQueryMeta=>{
             if(oldQueryMeta && oldQueryMeta.cancelPromise){
                 oldQueryMeta.cancelPromise();
             }
             return newQueryMeta
         })
-return newQueryMeta;
-
     }
 
 
