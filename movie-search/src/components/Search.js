@@ -5,7 +5,12 @@ export default function Search({
                                    handleSearchInput,
                                    MOVIE_TYPE_TO_FILTER_VALUE,
                                    movieTypeIndex,
-                                   handleMovieTypeChange}){
+                                   handleMovieTypeChange,
+                                   MIN_YEAR,
+                                   MAX_YEAR,
+                                   yearsSliderValue,
+                                   handleYearsSliderValueChange
+}){
     return (
         <div id="search">
             <div className='input-box'>
@@ -18,6 +23,10 @@ export default function Search({
                 MOVIE_TYPE_TO_FILTER_VALUE={MOVIE_TYPE_TO_FILTER_VALUE}
                 movieTypeIndex={movieTypeIndex}
                 handleMovieTypeChange={handleMovieTypeChange}
+                yearsSliderValue={yearsSliderValue}
+                handleYearsSliderValueChange={handleYearsSliderValueChange}
+                MIN_YEAR={MIN_YEAR}
+                MAX_YEAR={MAX_YEAR}
             />
         </div>
     )
