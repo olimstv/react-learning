@@ -1,7 +1,9 @@
 
-
-export default function MoviesList(){
+export default function MoviesList({movieQueryResult}){
+    console.log('movieQueryResult (MoviesList)', movieQueryResult)
 return (
-    <h3>Hello</h3>
+
+        <h3>Hello</h3>
+
 )
 }

@@ -1,9 +1,11 @@
 import MoviesList from "./MoviesList";
 
-const Showcase = () => {
+const Showcase = ({movieQueryResult}) => {
   return (
     <div id='showcase'>
-      <MoviesList />
+      <MoviesList
+          movieQueryResult={movieQueryResult}
+      />
     </div>
   );
 };

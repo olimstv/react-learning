@@ -12,13 +12,17 @@ export function queryMovies(
         const movies = [];
 
         const fetchNextPage = (curPage) => {
+            if(cancelFetch){
+                resolve(movies)
+                return;
+            }
             //    check if the fetching needs to be finished
-            const isFinished = numPages !== undefined && curPage > numPages;
+            const isFinished = (numPages !== undefined && curPage > numPages) || movies.length > MAX_MOVIES_TO_SHOW;
             if (isFinished) {
                 resolve(movies)
                 return
             }
-
+console.log('curPage: ', curPage)
             fetchMovies(usableSearchTerm, movieType, curPage)
                 .then(data => {
                     if (data.Response === "False") {
@@ -34,7 +38,7 @@ export function queryMovies(
                         movies.push(movie)
                     }
                     })
-                    fetchNextPage(curPage++)
+                    fetchNextPage(curPage + 1)
                 })
         }
         fetchNextPage(1)

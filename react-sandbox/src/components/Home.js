@@ -12,7 +12,7 @@ import Showcase from "./Showcase";
 
 
 export default function Home() {
-    const [searchTerm, setSearchTerm] = useState(undefined)
+    const [searchTerm, setSearchTerm] = useState('')
     const [movieTypeIndex, setMovieTypeIndex] = useState(0)
     const [yearsSliderValue, setYearsSliderValue] = useState([MIN_YEAR_VALUE, MAX_YEAR_VALUE])
     const [movieQueryMeta, setMovieQueryMeta] = useState()
@@ -53,14 +53,21 @@ export default function Home() {
             toYear = yearsSliderValue[0];
         }
         let movieType = MOVIE_TYPE_TO_FILTER_VALUE[movieTypeIndex]
-        const newQueryMeta = queryMovies(usableSearchTerm, fromYear, toYear, movieType);
+        const newQueryMeta = queryMovies(
+            usableSearchTerm,
+            fromYear,
+            toYear,
+            movieType
+        );
 
-        newQueryMeta.promise.then(data=>{
+        newQueryMeta.promise
+            .then(data=>{
             if(data[0].Response) {
                 setMessage(data[0].Error)
             } else {
                 setMessage(MESSAGES.select)
                 setMovieQueryResult(data)
+                // console.log('movieQueryResult',movieQueryResult)
             }
             }
         ).catch(errorMessage=>{
@@ -68,8 +75,9 @@ export default function Home() {
         })
         setMovieQueryMeta((oldQueryMeta)=>{
             if(oldQueryMeta && oldQueryMeta.cancelPromise){
-                console.log(oldQueryMeta.cancelPromise())
+                oldQueryMeta.cancelPromise()
             }
+            return newQueryMeta;
         })
     }
 
@@ -88,7 +96,9 @@ export default function Home() {
                 MIN_YEAR={MIN_YEAR_VALUE}
                 MAX_YEAR={MAX_YEAR_VALUE}
             />
-            <Showcase/>
+            <Showcase
+                movieQueryResult={movieQueryResult}
+            />
         </>
     )
 }
