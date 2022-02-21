@@ -1,4 +1,5 @@
 import Filters from "./Filters";
+import {MdSearch} from 'react-icons/md'
 
 export default function Search({
                                    searchTerm,
@@ -15,6 +16,7 @@ export default function Search({
     return (
         <div id="search">
             <div className='input-box'>
+                <MdSearch className='search-icon' />
                 <input
                     onChange={e => handleSearchTermChange(e)}
                     onKeyDown={e => searchKeyPress(e)}

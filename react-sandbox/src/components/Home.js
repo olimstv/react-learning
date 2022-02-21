@@ -5,21 +5,53 @@ import {
     MOVIE_TYPE_TO_FILTER_VALUE,
     MIN_YEAR_VALUE,
     MAX_YEAR_VALUE,
-    MESSAGES
+    MESSAGES,
+    LOCAL_STORAGE_KEY
 } from "../constants";
-import {enterKeyCheck, queryMovies} from "../helpers/useMoviesQuery";
+import {enterKeyCheck, queryMovies, selectedMovieDataFetch} from "../helpers/useMoviesQuery";
 import Showcase from "./Showcase";
 
 
-export default function Home() {
-    const [searchTerm, setSearchTerm] = useState('')
-    const [movieTypeIndex, setMovieTypeIndex] = useState(0)
-    const [yearsSliderValue, setYearsSliderValue] = useState([MIN_YEAR_VALUE, MAX_YEAR_VALUE])
+const Home = () => {
+    const [initialLocalStorage] = useState(()=>{
+    //    Get from localStorage by key
+        const item = window.localStorage.getItem(LOCAL_STORAGE_KEY)
+        return item ? JSON.parse(item) : null;
+    })
+    const [searchTerm, setSearchTerm] = useState(()=>{
+        return initialLocalStorage?.searchTerm ?? '';
+    })
+    const [movieTypeIndex, setMovieTypeIndex] = useState(()=>{
+        return initialLocalStorage?.movieTypeIndex ?? 0
+    })
+    const [yearsSliderValue, setYearsSliderValue] = useState(()=>{
+        return initialLocalStorage?.yearsSliderValue ?? [MIN_YEAR_VALUE, MAX_YEAR_VALUE]})
     const [movieQueryMeta, setMovieQueryMeta] = useState()
-    const [movieQueryResult, setMovieQueryResult] = useState([])
-    const [message, setMessage] = useState(MESSAGES.initial)
+    const [movieQueryResult, setMovieQueryResult] = useState(()=>{
+        return initialLocalStorage?.movieQueryResult ?? []
+    })
+    const [message, setMessage] = useState(()=>{
+        return initialLocalStorage?.message ?? MESSAGES.initial
+    })
+    const [selectedMovie, setSelectedMovie] = useState(()=>{
+        return initialLocalStorage?.selectedMovie ?? undefined
+    })
+    const [bookmarkedMovies, setBookmarkedMovies] = useState(()=> {
+        return initialLocalStorage?.bookmarkedMovies ?? []
+    })
 
 
+    const saveStatesToLocalStorage = ((override = {})=>{
+        const newValue = {
+            movieQueryResult,
+            movieTypeIndex,
+            searchTerm,
+            yearsSliderValue,
+            selectedMovie,
+            bookmarkedMovies,
+            ...override}
+        window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newValue))
+    })
 //    handlers
     const handleSearchTermChange = (e) => {
         let searchTerm = e.target.value;
@@ -45,42 +77,61 @@ export default function Home() {
         //    true? assign values from years filter state to the variables
         //    assign moviesType to a variable
         let fromYear, toYear;
-        if (yearsSliderValue[0] < yearsSliderValue[1]) {
+        if(yearsSliderValue[0] < yearsSliderValue[1]){
             fromYear = yearsSliderValue[0];
             toYear = yearsSliderValue[1];
         } else {
-            fromYear = yearsSliderValue[1];
+            fromYear = yearsSliderValue[1]
             toYear = yearsSliderValue[0];
         }
         let movieType = MOVIE_TYPE_TO_FILTER_VALUE[movieTypeIndex]
+
         const newQueryMeta = queryMovies(
             usableSearchTerm,
             fromYear,
             toYear,
-            movieType
-        );
-
+            movieType);
+        // parsing the promise, returned from queryMovies
         newQueryMeta.promise
             .then(data=>{
-            if(data[0].Response) {
+            if(data[0].Response === "False"){
                 setMessage(data[0].Error)
             } else {
                 setMessage(MESSAGES.select)
                 setMovieQueryResult(data)
-                // console.log('movieQueryResult',movieQueryResult)
+                saveStatesToLocalStorage({movieQueryResult: data})
             }
-            }
-        ).catch(errorMessage=>{
+            console.log('movies', data)
+        }).catch(errorMessage=>{
             setMessage(errorMessage)
         })
-        setMovieQueryMeta((oldQueryMeta)=>{
+    //    updating the movieQueryMeta state
+        setMovieQueryMeta(oldQueryMeta=>{
             if(oldQueryMeta && oldQueryMeta.cancelPromise){
                 oldQueryMeta.cancelPromise()
             }
-            return newQueryMeta;
+            return newQueryMeta
         })
     }
+    const handleMovieItemClick = async movieID =>{
+        const data = await selectedMovieDataFetch(movieID)
+        setSelectedMovie(data);
+        saveStatesToLocalStorage({selectedMovie: data})
+    }
 
+    const handleWatchlistBtnClick = (e)=>{
+        const movieToBookmark = selectedMovie;
+        let newBookmarkedMoviesArray = []
+        const isAlreadyBookmarked = bookmarkedMovies.some(movie=>movie.imdbID === movieToBookmark.imdbID);
+
+        if (isAlreadyBookmarked){
+            newBookmarkedMoviesArray = bookmarkedMovies.filter(movie=>movie.imdbID !== movieToBookmark.imdbID);
+        } else {
+            newBookmarkedMoviesArray = [...bookmarkedMovies, movieToBookmark]
+        }
+        setBookmarkedMovies(newBookmarkedMoviesArray);
+        saveStatesToLocalStorage({bookmarkedMovies: newBookmarkedMoviesArray})
+    }
 
     return (
         <>
@@ -98,8 +149,14 @@ export default function Home() {
             />
             <Showcase
                 movieQueryResult={movieQueryResult}
+                handleMovieItemClick={handleMovieItemClick}
+                selectedMovie={selectedMovie}
+                message={message}
+                bookmarkedMovies={bookmarkedMovies}
+                handleWatchlistBtnClick={handleWatchlistBtnClick}
             />
         </>
     )
 }
 
+export default Home;
