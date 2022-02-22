@@ -18,7 +18,6 @@ if(bookmarkedMovies.length !== 0 && selectedMovie !== undefined) {
                                 <button
                                     onClick={e=>{handleWatchlistBtnClick(e)}}
                                     className='btn-outline'
-
                                 >
                                     {isBookmarked
                                         ? <MdBookmark color='#ffa200' />

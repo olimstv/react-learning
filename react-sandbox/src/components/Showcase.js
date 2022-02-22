@@ -1,4 +1,4 @@
-import MoviesList from "./MoviesList";
+import MoviesList, {PAGE_MODE_HOME} from "./MoviesList";
 import MovieDetails from "./MovieDetails";
 
 const Showcase = ({movieQueryResult, handleMovieItemClick, selectedMovie, message, bookmarkedMovies, handleWatchlistBtnClick}) => {
@@ -6,7 +6,10 @@ const Showcase = ({movieQueryResult, handleMovieItemClick, selectedMovie, messag
     <div id='showcase'>
       <MoviesList
           movies={movieQueryResult}
+          bookmarkedMovies={bookmarkedMovies}
           handleMovieItemClick={handleMovieItemClick}
+          pageMode={PAGE_MODE_HOME}
+          selectedMovie={selectedMovie}
       />
         <MovieDetails
             selectedMovie={selectedMovie}
