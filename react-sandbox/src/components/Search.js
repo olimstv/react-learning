@@ -9,13 +9,15 @@ export default function Search({
                                    MIN_YEAR,
                                    MAX_YEAR,
                                    yearsSliderValue,
-                                   handleYearsSliderValueChange
+                                   handleYearsSliderValueChange,
+                                   handleSearchEnterKeyPress
 }){
     return (
         <div id="search">
             <div className='input-box'>
                 <input
                     onChange={e => handleSearchInput(e)}
+                    onKeyUp={e => handleSearchEnterKeyPress(e)}
                     value = {searchTerm}
                     type="text"/>
             </div>
